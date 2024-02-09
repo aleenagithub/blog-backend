@@ -5,7 +5,7 @@ const postSchema=new mongoose.Schema(
         //datatype of userid is objectid
         //user is store userid
         userId:{
-            type:String,
+            type:mongoose.Schema.Types.ObjectId,
             require:true,
             ref:"user"
 
