@@ -1,29 +1,39 @@
 const express=require("express")
-const signupModel=require("../model/signupModel")
 const router=express.Router()
-//separate page  to  call api 
+const bcrypt= require("bcryptjs")
+const signupModel = require("../model/signupModel")
+
+
+hashPasswardGenertor=async (pass)=>{
+    const salt= await bcrypt.genSalt(10)
+    return bcrypt.hash(pass,salt)
+
+}
+
 router.post("/add",async(req,res)=>{
-    let data=req.body
-    let  signup=new signupModel(data)
-    let result=await signup.save()
-    res.json(
-        {
-            status:"success"
+    let {data}={"data":req.body}
+    let password=data.password
+    hashPasswardGenertor(password).then(
+        (hashedPassword)=>{
+            console.log(hashedPassword)
+            data.password=hashedPassword
+            console.log(data)
+            let signup=signupModel(data)
+            let result =signup.save()
+            res.json({
+                status:"success"
+            })
         }
     )
+    
 })
 
-router.get("/view",async(req,res)=>{
-    let data=await signupModel.find()
-    res.json(data)
-})
 
-router.post("/search",async(req,res)=>{
-    let input=req.body
-    let data=await patientModel.find(input)
-   res.json(data)
- })
-  
+
+
+
+
+
+
+
 module.exports=router
-
-
